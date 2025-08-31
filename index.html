@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microclimate Pod | Smart Plant Ecosystem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        dark: {
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                            600: '#475569',
+                            500: '#64748b',
+                            400: '#94a3b8',
+                            300: '#cbd5e1',
+                            200: '#e2e8f0',
+                            100: '#f1f5f9',
+                            50: '#f8fafc',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'gradient-x': 'gradient-x 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        'gradient-x': {
+                            '0%, 100%': {
+                                'background-size':'200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size':'200% 200%',
+                                'background-position': 'right center'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0ea5e9;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0284c7;
+        }
+        
+        /* Glow effect */
+        .glow {
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
+        }
+        
+        /* Gradient text */
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(90deg, #0ea5e9, #10b981);
+        }
+        
+        /* Gradient underline */
+        .gradient-underline {
+            position: relative;
+            display: inline-block;
+        }
+        .gradient-underline::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #0ea5e9, #10b981);
+            border-radius: 2px;
+        }
+        
+        /* Glass morphism effect */
+        .glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Sensor card animation */
+        .sensor-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .sensor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.4);
+        }
+        .sensor-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.1), transparent);
+            transition: 0.5s;
+        }
+        .sensor-card:hover::before {
+            left: 100%;
+        }
+        
+        /* Floating animation */
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Pulse animation */
+        .pulse-slow {
+            animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        /* Gradient background animation */
+        .gradient-animate {
+            background-size: 200% 200%;
+            animation: gradient-x 8s ease infinite;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-gray-100 font-sans antialiased transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="glass sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-leaf text-emerald-500 text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-white">Microclimate Pod</span>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="#overview" class="text-gray-300 hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors">Overview</a>
+                    <a href="#features" class="text-gray-300 hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors">Features</a>
+                    <a href="#components" class="text-gray-300 hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors">Components</a>
+                    <a href="#diagrams" class="text-gray-300 hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors">Diagrams</a>
+                    <a href="#documentation" class="text-gray-300 hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors">Docs</a>
+                    <a href="#dashboard" class="bg-primary-700 hover:bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">Live Dashboard</a>
+                </div>
+                <div class="-mr-2 flex items-center md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-dark-800 border-t border-dark-700">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="#overview" class="block pl-3 pr-4 py-2 border-l-4 border-primary-500 text-base font-medium text-white bg-dark-700">Overview</a>
+                <a href="#features" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:text-white hover:bg-dark-700 hover:border-gray-300">Features</a>
+                <a href="#components" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:text-white hover:bg-dark-700 hover:border-gray-300">Components</a>
+                <a href="#diagrams" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:text-white hover:bg-dark-700 hover:border-gray-300">Diagrams</a>
+                <a href="#documentation" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-300 hover:text-white hover:bg-dark-700 hover:border-gray-300">Documentation</a>
+                <a href="#dashboard" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-primary-400 hover:text-primary-300 hover:bg-dark-700">Live Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative gradient-animate bg-gradient-to-r from-primary-800 to-emerald-800 text-white">
+        <div class="absolute inset-0">
+            <div class="absolute inset-0 bg-black opacity-30"></div>
+            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80')] bg-cover bg-center mix-blend-overlay opacity-20"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8 relative">
+            <div class="text-center">
+                <div class="inline-block mb-6 px-4 py-2 bg-dark-800/50 rounded-full backdrop-blur-sm border border-dark-700">
+                    <span class="text-primary-400 font-medium">IoT Plant Ecosystem v2.0</span>
+                </div>
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+                    <span class="gradient-text">Smart Microclimate Pod</span>
+                </h1>
+                <p class="text-xl md:text-2xl max-w-3xl mx-auto mb-8 text-gray-200">
+                    The ultimate IoT solution for perfect plant growth conditions and human wellness
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="http://10.202.111.150:5000/" class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 transition-colors">
+                        <i class="fas fa-tachometer-alt mr-2"></i> Live Dashboard
+                    </a>
+                    <a href="#documentation" class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-md shadow-sm text-primary-100 bg-dark-800 hover:bg-dark-700 border-dark-600 transition-colors">
+                        <i class="fas fa-book mr-2"></i> Documentation
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-dark-900 to-transparent"></div>
+        
+        <!-- Floating elements -->
+        <div class="absolute top-1/4 left-1/4 w-8 h-8 rounded-full bg-primary-500/20 glow floating" style="animation-delay: 0s;"></div>
+        <div class="absolute top-1/3 right-1/4 w-6 h-6 rounded-full bg-emerald-400/20 glow floating" style="animation-delay: 1s;"></div>
+        <div class="absolute bottom-1/4 left-1/3 w-10 h-10 rounded-full bg-primary-400/15 glow floating" style="animation-delay: 2s;"></div>
+    </header>
+
+    <!-- Overview Section -->
+    <section id="overview" class="py-20 bg-dark-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
+                    Project <span class="gradient-underline">Overview</span>
+                </h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-400 mx-auto">
+                    A comprehensive IoT solution for microclimate monitoring and analysis
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-6">What is the Smart Microclimate Pod?</h3>
+                    <p class="text-gray-400 mb-6 leading-relaxed">
+                        An advanced IoT-enabled smart ecosystem that automatically detects plant species and precisely adjusts climate conditions (temperature, humidity, light, CO₂) to their optimal levels. Combining computer vision, automation, AI recommendations, and voice control, it creates a perfectly balanced micro-environment tailored to each plant's specific needs while also enhancing human wellness through natural aromatherapy.
+                    </p>
+                    <h3 class="text-2xl font-bold text-white mb-6">Core Features</h3>
+                    <ul class="space-y-4 text-gray-300">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 bg-emerald-500/10 p-2 rounded-lg mr-4">
+                                <i class="fas fa-seedling text-emerald-400"></i>
+                            </div>
+                            <span>Plant-based humidification with natural essential oil diffusion</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 bg-blue-500/10 p-2 rounded-lg mr-4">
+                                <i class="fas fa-tint text-blue-400"></i>
+                            </div>
+                            <span>Precision watering based on real-time soil moisture analysis</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 bg-purple-500/10 p-2 rounded-lg mr-4">
+                                <i class="fas fa-robot text-purple-400"></i>
+                            </div>
+                            <span>Google Assistant and Alexa voice control integration</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 bg-amber-500/10 p-2 rounded-lg mr-4">
+                                <i class="fas fa-chart-line text-amber-400"></i>
+                            </div>
+                            <span>Real-time monitoring via responsive web/mobile dashboard</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 bg-green-500/10 p-2 rounded-lg mr-4">
+                                <i class="fas fa-camera text-green-400"></i>
+                            </div>
+                            <span>Automatic plant detection and climate profile adjustment</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="relative">
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-dark-700">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                             alt="Microclimate Pod"
+                             class="w-full h-auto object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark-900/80 to-transparent"></div>
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 bg-dark-800 p-6 rounded-xl shadow-lg border border-dark-700 w-2/3">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-primary-500/10 p-2 rounded-full mr-3">
+                                <i class="fas fa-microchip text-primary-400"></i>
+                            </div>
+                            <h4 class="font-bold text-white">Tech Specs</h4>
+                        </div>
+                        <ul class="text-sm text-gray-300 space-y-2">
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-emerald-400 mr-2 text-xs"></i>
+                                <span>Raspberry Pi 4 Controller</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-emerald-400 mr-2 text-xs"></i>
+                                <span>DHT22 + Soil Moisture Sensors</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-emerald-400 mr-2 text-xs"></i>
+                                <span>5MP Plant Camera</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-emerald-400 mr-2 text-xs"></i>
+                                <span>12V Pump & Fan System</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Smart Features Section -->
+    <section id="features" class="py-20 bg-dark-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
+                    Intelligent <span class="gradient-underline">Features</span>
+                </h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-400 mx-auto">
+                    Combining IoT automation with AI and voice control
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="sensor-card bg-dark-700 p-8 rounded-xl border border-dark-600 hover:border-primary-500/50 transition-all">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-pink-500/10 p-3 rounded-full mr-4 glow">
+                            <i class="fas fa-seedling text-pink-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">Plant Detection</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4 leading-relaxed">
+                        Our advanced camera system identifies plant species and automatically adjusts all environmental parameters to their ideal conditions, creating the perfect microclimate for each plant.
+                    </p>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-start">
+                            <i class="fas fa-caret-right text-pink-400 mt-1 mr-2"></i>
+                            <span>Computer vision plant recognition</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-caret-right text-pink-400 mt-1 mr-2"></i>
+                            <span>Automatic climate profile selection</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-caret-right text-pink-400 mt-1 mr-2"></i>
+                            <span>Multi-plant zone support</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="sensor-card bg-dark-700 p-8 rounded-xl border border-dark-600 hover:border-purple-500/50 transition-all">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-purple-500/10 p-3 rounded-full mr-4 glow">
+                            <i class="fas fa-robot text-purple-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">AI Plant Assistant</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4 leading-relaxed">
+                        Our machine learning model analyzes your plant's environment and growth patterns to provide personalized care recommendations including optimal watering schedules and nutrient levels.
+                    </p>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-start">
+                            <i class="fas fa-caret-right text-purple-400 mt-1 mr-2"></i>
+                            <span>Predictive maintenance alerts</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-caret-right text-purple-400 mt-1 mr-2"></i>
+                            <span>Growth optimization tips</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-caret-right text-purple-400 mt-1 mr-2"></i>
+                            <span>Seasonal adjustment recommendations</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="sensor-card bg-dark-700 p-8 rounded-xl border border-dark-600 hover:border-blue-500/50 transition-all">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-blue-500/10 p-3 rounded-full mr-4 glow">
+                            <i class="fas fa-microphone-alt text-blue-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">Voice Control</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4 leading-relaxed">
+                        Fully integrated with Google Assistant and Amazon Alexa for hands-free control. Manage your pod with simple voice commands from anywhere in your home.
+                    </p>
+                    <div class="bg-dark-800 p-4 rounded-lg border border-dark-700">
+                        <p class="font-mono text-sm text-gray-200">
+                            <span class="text-blue-400">"Hey Google, water the pod"</span><br>
+                            <span class="text-blue-400">"Alexa, what's the humidity in the pod?"</span><br>
+                            <span class="text-blue-400">"Hey Google, turn on aromatherapy mode"</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature metrics -->
+            <div class="mt-16 grid md:grid-cols-4 gap-6">
+                <div class="bg-dark-700/50 p-6 rounded-xl border border-dark-600 text-center">
+                    <div class="text-4xl font-bold text-primary-400 mb-2">99.7%</div>
+                    <div class="text-gray-400">System Uptime</div>
+                </div>
+                <div class="bg-dark-700/50 p-6 rounded-xl border border-dark-600 text-center">
+                    <div class="text-4xl font-bold text-emerald-400 mb-2">50+</div>
+                    <div class="text-gray-400">Plant Profiles</div>
+                </div>
+                <div class="bg-dark-700/50 p-6 rounded-xl border border-dark-600 text-center">
+                    <div class="text-4xl font-bold text-purple-400 mb-2">24/7</div>
+                    <div class="text-gray-400">Monitoring</div>
+                </div>
+                <div class="bg-dark-700/50 p-6 rounded-xl border border-dark-600 text-center">
+                    <div class="text-4xl font-bold text-amber-400 mb-2">0.1°C</div>
+                    <div class="text-gray-400">Temp Precision</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Components Section -->
+    <section id="components" class="py-20 bg-dark-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
+                    System <span class="gradient-underline">Components</span>
+                </h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-400 mx-auto">
+                    The hardware and software that power the Microclimate Pod
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Sensor Card 1 -->
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-blue-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 bg-blue-500/10 p-3 rounded-lg glow">
+                                <i class="fas fa-thermometer-half text-blue-400 text-2xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-lg font-bold text-white">Temperature Sensor</h3>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            Measures ambient temperature with ±0.5°C accuracy across a range of -40°C to 125°C.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-microchip mr-2 text-blue-400"></i>
+                            <span>DS18B20 Digital Sensor</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sensor Card 2 -->
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-emerald-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 bg-emerald-500/10 p-3 rounded-lg glow">
+                                <i class="fas fa-tint text-emerald-400 text-2xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-lg font-bold text-white">Humidity Sensor</h3>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            Provides relative humidity measurements with ±2% accuracy from 20% to 80% RH.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-microchip mr-2 text-emerald-400"></i>
+                            <span>DHT22 Digital Sensor</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sensor Card 3 -->
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-purple-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 bg-purple-500/10 p-3 rounded-lg glow">
+                                <i class="fas fa-sun text-purple-400 text-2xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-lg font-bold text-white">Light Sensor</h3>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            Measures ambient light intensity with a spectral response close to the human eye.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-microchip mr-2 text-purple-400"></i>
+                            <span>BH1750 Digital Sensor</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sensor Card 4 -->
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-red-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 bg-red-500/10 p-3 rounded-lg glow">
+                                <i class="fas fa-wind text-red-400 text-2xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-lg font-bold text-white">CO₂ Sensor</h3>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            Detects carbon dioxide concentration with ±50ppm accuracy (400-5000ppm range).
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-microchip mr-2 text-red-400"></i>
+                            <span>MH-Z19 NDIR Sensor</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Controller Card -->
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-yellow-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 bg-yellow-500/10 p-3 rounded-lg glow">
+                                <i class="fas fa-microchip text-yellow-400 text-2xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-lg font-bold text-white">Controller Unit</h3>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            Raspberry Pi 4 with 4GB RAM running custom Python scripts for data collection and processing.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-server mr-2 text-yellow-400"></i>
+                            <span>Raspberry Pi 4 Model B</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Camera Card -->
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-pink-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 bg-pink-500/10 p-3 rounded-lg glow">
+                                <i class="fas fa-camera text-pink-400 text-2xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-lg font-bold text-white">Plant Camera</h3>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            5MP autofocus camera with computer vision capabilities for plant species identification and growth monitoring.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-microchip mr-2 text-pink-400"></i>
+                            <span>Raspberry Pi Camera Module 3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional components -->
+            <div class="mt-12 bg-dark-800/50 border border-dark-700 rounded-xl p-8">
+                <h3 class="text-2xl font-bold text-white mb-6">Additional System Components</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="flex items-start">
+                        <div class="bg-green-500/10 p-2 rounded-lg mr-4">
+                            <i class="fas fa-plug text-green-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white mb-1">Power System</h4>
+                            <p class="text-gray-400 text-sm">12V DC power supply with battery backup for uninterrupted operation</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="bg-blue-500/10 p-2 rounded-lg mr-4">
+                            <i class="fas fa-fan text-blue-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white mb-1">Ventilation System</h4>
+                            <p class="text-gray-400 text-sm">Quiet 120mm PWM fans with temperature-controlled speed</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="bg-purple-500/10 p-2 rounded-lg mr-4">
+                            <i class="fas fa-tint text-purple-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white mb-1">Watering System</h4>
+                            <p class="text-gray-400 text-sm">12V peristaltic pump with flow sensor and anti-clog design</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Diagrams Section -->
+    <section id="diagrams" class="py-20 bg-dark-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
+                    System <span class="gradient-underline">Diagrams</span>
+                </h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-400 mx-auto">
+                    Visual representations of the hardware architecture and connections
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-dark-700/50 p-6 rounded-xl border border-dark-600">
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                        <i class="fas fa-project-diagram text-blue-400 mr-2"></i>
+                        Block Diagram
+                    </h3>
+                    <div class="bg-dark-800 p-4 rounded-lg border border-dark-700">
+                        <img src="https://www.researchgate.net/publication/334576878/figure/fig1/AS:783989536882689@1564025812725/Block-diagram-of-IoT-based-weather-monitoring-system.png"
+                             alt="System Block Diagram"
+                             class="w-full h-auto rounded">
+                    </div>
+                    <p class="mt-4 text-gray-400">
+                        The block diagram shows the overall architecture of the Microclimate Pod system, illustrating how sensors connect to the controller and how data flows to storage and visualization interfaces.
+                    </p>
+                </div>
+                
+                <div class="bg-dark-700/50 p-6 rounded-xl border border-dark-600">
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                        <i class="fas fa-plug text-emerald-400 mr-2"></i>
+                        Wiring Diagram
+                    </h3>
+                    <div class="bg-dark-800 p-4 rounded-lg border border-dark-700">
+                        <img src="https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/10/ESP32-DHT11-DHT22-Temperature-Humidity-Web-Server-using-Arduino-IDE-Circuit-Schematic.png"
+                             alt="Wiring Diagram"
+                             class="w-full h-auto rounded">
+                    </div>
+                    <p class="mt-4 text-gray-400">
+                        Detailed wiring diagram showing how each sensor connects to the Raspberry Pi, including pin assignments and any necessary supporting components like pull-up resistors.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-8 bg-dark-700/50 p-6 rounded-xl border border-dark-600">
+                <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                    <i class="fas fa-code-branch text-purple-400 mr-2"></i>
+                    Software Architecture
+                </h3>
+                <div class="bg-dark-800 p-4 rounded-lg border border-dark-700">
+                    <img src="https://www.researchgate.net/publication/344418428/figure/fig1/AS:940024172875776@1601469017839/Software-architecture-of-the-IoT-system.png"
+                         alt="Software Architecture"
+                         class="w-full h-auto rounded">
+                </div>
+                <p class="mt-4 text-gray-400">
+                    The software architecture diagram illustrates the data flow from sensor reading through processing to storage and visualization, including all the software components and their interactions.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Section -->
+    <section id="documentation" class="py-20 bg-dark-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
+                    Technical <span class="gradient-underline">Documentation</span>
+                </h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-400 mx-auto">
+                    Comprehensive guides for setup, operation, and customization
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-blue-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 bg-blue-500/10 p-3 rounded-lg glow">
+                                <i class="fas fa-tools text-blue-400 text-2xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-lg font-bold text-white">Hardware Setup</h3>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            Step-by-step instructions for assembling the physical components and connecting all sensors to the controller.
+                        </p>
+                        <a href="#" class="inline-flex items-center text-blue-400 hover:text-blue-300 font-medium text-sm">
+                            View Guide
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-purple-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 bg-purple-500/10 p-3 rounded-lg glow">
+                                <i class="fas fa-code text-purple-400 text-2xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-lg font-bold text-white">Software Installation</h3>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            How to install the required software stack on your Raspberry Pi and configure the system.
+                        </p>
+                        <a href="#" class="inline-flex items-center text-blue-400 hover:text-blue-300 font-medium text-sm">
+                            View Guide
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-emerald-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 bg-emerald-500/10 p-3 rounded-lg glow">
+                                <i class="fas fa-database text-emerald-400 text-2xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-lg font-bold text-white">Data Collection</h3>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            Documentation on data formats, collection intervals, and how to access stored data.
+                        </p>
+                        <a href="#" class="inline-flex items-center text-blue-400 hover:text-blue-300 font-medium text-sm">
+                            View Guide
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-amber-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 bg-amber-500/10 p-3 rounded-lg glow">
+                                <i class="fas fa-chart-line text-amber-400 text-2xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-lg font-bold text-white">Data Visualization</h3>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            How to set up and customize the dashboard for viewing your microclimate data.
+                        </p>
+                        <a href="#" class="inline-flex items-center text-blue-400 hover:text-blue-300 font-medium text-sm">
+                            View Guide
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-red-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 bg-red-500/10 p-3 rounded-lg glow">
+                                <i class="fas fa-bug text-red-400 text-2xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-lg font-bold text-white">Troubleshooting</h3>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            Common issues and their solutions for both hardware and software components.
+                        </p>
+                        <a href="#" class="inline-flex items-center text-blue-400 hover:text-blue-300 font-medium text-sm">
+                            View Guide
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-green-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 bg-green-500/10 p-3 rounded-lg glow">
+                                <i class="fas fa-plus-circle text-green-400 text-2xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-lg font-bold text-white">Customization</h3>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            How to extend the system with additional sensors or modify the software for specific needs.
+                        </p>
+                        <a href="#" class="inline-flex items-center text-blue-400 hover:text-blue-300 font-medium text-sm">
+                            View Guide
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 sensor-card bg-gradient-to-r from-primary-900/30 to-emerald-900/30 rounded-xl border border-primary-800/30">
+                <div class="p-8">
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 mb-6 md:mb-0">
+                            <h3 class="text-2xl font-bold text-white mb-4">Download Complete Documentation</h3>
+                            <p class="text-gray-300 mb-6">
+                                Get the full technical manual as a PDF document, including all setup guides, API documentation, and technical specifications.
+                            </p>
+                            <button class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 transition-colors">
+                                <i class="fas fa-file-pdf mr-2"></i>
+                                Download PDF (2.4MB)
+                            </button>
+                        </div>
+                        <div class="md:w-1/2 flex justify-center">
+                            <div class="relative">
+                                <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
+                                     alt="PDF Document"
+                                     class="h-48 w-auto opacity-80 floating">
+                                <div class="absolute -inset-4 bg-primary-500/10 rounded-full -z-10 pulse-slow"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview Section -->
+    <section id="dashboard" class="py-20 bg-dark-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
+                    Live <span class="gradient-underline">Dashboard</span>
+                </h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-400 mx-auto">
+                    Real-time monitoring and control interface
+                </p>
+            </div>
+            
+            <div class="bg-dark-900 rounded-xl overflow-hidden shadow-2xl border border-dark-700">
+                <!-- Dashboard header -->
+                <div class="bg-dark-800 px-6 py-4 border-b border-dark-700 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                        <div class="w-3 h-3 rounded-full bg-amber-500 mr-2"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <div class="text-sm text-gray-400">
+                        <span class="text-primary-400 font-medium">microclimate-pod.local</span> | Last updated: <span id="live-time" class="font-mono">00:00:00</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="p-1 rounded-md hover:bg-dark-700 text-gray-400 hover:text-white">
+                            <i class="fas fa-sync-alt text-sm"></i>
+                        </button>
+                        <button class="p-1 rounded-md hover:bg-dark-700 text-gray-400 hover:text-white">
+                            <i class="fas fa-cog text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Dashboard content -->
+                <div class="p-6">
+                    <div class="grid md:grid-cols-4 gap-6 mb-6">
+                        <!-- Sensor readings -->
+                        <div class="bg-dark-800/50 p-4 rounded-lg border border-dark-700">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="text-gray-400 text-sm">Temperature</div>
+                                <i class="fas fa-thermometer-half text-blue-400"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-white">24.5°C</div>
+                            <div class="text-xs text-emerald-400 mt-1">
+                                <i class="fas fa-arrow-up mr-1"></i> Optimal
+                            </div>
+                        </div>
+                        <div class="bg-dark-800/50 p-4 rounded-lg border border-dark-700">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="text-gray-400 text-sm">Humidity</div>
+                                <i class="fas fa-tint text-blue-400"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-white">65%</div>
+                            <div class="text-xs text-amber-400 mt-1">
+                                <i class="fas fa-exclamation-circle mr-1"></i> Slightly high
+                            </div>
+                        </div>
+                        <div class="bg-dark-800/50 p-4 rounded-lg border border-dark-700">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="text-gray-400 text-sm">Soil Moisture</div>
+                                <i class="fas fa-seedling text-emerald-400"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-white">42%</div>
+                            <div class="text-xs text-emerald-400 mt-1">
+                                <i class="fas fa-check-circle mr-1"></i> Optimal
+                            </div>
+                        </div>
+                        <div class="bg-dark-800/50 p-4 rounded-lg border border-dark-700">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="text-gray-400 text-sm">Light Level</div>
+                                <i class="fas fa-sun text-amber-400"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-white">1200 lux</div>
+                            <div class="text-xs text-emerald-400 mt-1">
+                                <i class="fas fa-check-circle mr-1"></i> Optimal
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts row -->
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-dark-800/50 p-4 rounded-lg border border-dark-700">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-white">Temperature & Humidity</h3>
+                                <select class="bg-dark-700 border border-dark-600 text-gray-300 text-sm rounded-md px-2 py-1">
+                                    <option>Last 24h</option>
+                                    <option>Last 7d</option>
+                                    <option>Last 30d</option>
+                                </select>
+                            </div>
+                            <div class="h-64 bg-dark-900 rounded border border-dark-700 flex items-center justify-center text-gray-500">
+                                [Temperature/Humidity Chart]
+                            </div>
+                        </div>
+                        <div class="bg-dark-800/50 p-4 rounded-lg border border-dark-700">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-white">Soil Moisture</h3>
+                                <select class="bg-dark-700 border border-dark-600 text-gray-300 text-sm rounded-md px-2 py-1">
+                                    <option>Last 24h</option>
+                                    <option>Last 7d</option>
+                                    <option>Last 30d</option>
+                                </select>
+                            </div>
+                            <div class="h-64 bg-dark-900 rounded border border-dark-700 flex items-center justify-center text-gray-500">
+                                [Soil Moisture Chart]
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Controls row -->
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-dark-800/50 p-4 rounded-lg border border-dark-700">
+                            <h3 class="text-lg font-medium text-white mb-4">Plant Profile</h3>
+                            <select class="w-full bg-dark-700 border border-dark-600 text-gray-300 text-sm rounded-md px-3 py-2 mb-4">
+                                <option>Succulent</option>
+                                <option>Fern</option>
+                                <option selected>Herb Garden</option>
+                                <option>Orchid</option>
+                                <option>Custom</option>
+                            </select>
+                            <div class="text-sm text-gray-400 mb-2">Optimal Conditions:</div>
+                            <ul class="text-sm text-gray-300 space-y-1">
+                                <li class="flex items-center">
+                                    <i class="fas fa-thermometer-half text-blue-400 mr-2 w-4"></i>
+                                    <span>Temperature: 18-26°C</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-tint text-blue-400 mr-2 w-4"></i>
+                                    <span>Humidity: 40-60%</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-seedling text-emerald-400 mr-2 w-4"></i>
+                                    <span>Soil Moisture: 35-50%</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-dark-800/50 p-4 rounded-lg border border-dark-700">
+                            <h3 class="text-lg font-medium text-white mb-4">System Mode</h3>
+                            <div class="flex items-center space-x-4 mb-6">
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-1">
+                                        <input id="auto-mode" name="mode" type="radio" checked class="h-4 w-4 text-primary-600 border-dark-500 focus:ring-primary-500">
+                                        <label for="auto-mode" class="ml-2 block text-sm font-medium text-white">Auto</label>
+                                    </div>
+                                    <p class="text-xs text-gray-400">System automatically adjusts conditions</p>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-1">
+                                        <input id="manual-mode" name="mode" type="radio" class="h-4 w-4 text-primary-600 border-dark-500 focus:ring-primary-500">
+                                        <label for="manual-mode" class="ml-2 block text-sm font-medium text-white">Manual</label>
+                                    </div>
+                                    <p class="text-xs text-gray-400">You control all parameters</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-medium text-white mb-2">Manual Controls</h3>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button class="bg-dark-700 hover:bg-dark-600 text-white px-3 py-2 rounded-md text-sm font-medium border border-dark-600 flex items-center justify-center">
+                                    <i class="fas fa-fan mr-2"></i> Fan
+                                </button>
+                                <button class="bg-dark-700 hover:bg-dark-600 text-white px-3 py-2 rounded-md text-sm font-medium border border-dark-600 flex items-center justify-center">
+                                    <i class="fas fa-tint mr-2"></i> Water
+                                </button>
+                                <button class="bg-dark-700 hover:bg-dark-600 text-white px-3 py-2 rounded-md text-sm font-medium border border-dark-600 flex items-center justify-center">
+                                    <i class="fas fa-lightbulb mr-2"></i> Lights
+                                </button>
+                                <button class="bg-dark-700 hover:bg-dark-600 text-white px-3 py-2 rounded-md text-sm font-medium border border-dark-600 flex items-center justify-center">
+                                    <i class="fas fa-wind mr-2"></i> Aroma
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-dark-800/50 p-4 rounded-lg border border-dark-700">
+                            <h3 class="text-lg font-medium text-white mb-4">System Status</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-400">Last Watering</span>
+                                    <span class="text-sm font-medium text-white">2h 15m ago</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-400">Water Level</span>
+                                    <span class="text-sm font-medium text-white">85%</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-400">System Uptime</span>
+                                    <span class="text-sm font-medium text-white">7d 4h 22m</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-400">Data Points</span>
+                                    <span class="text-sm font-medium text-white">24,521</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-400">Storage</span>
+                                    <span class="text-sm font-medium text-white">1.2GB/8GB</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 pt-4 border-t border-dark-700">
+                                <button class="w-full bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                                    <i class="fas fa-power-off mr-2"></i> Restart System
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <a href="#" class="inline-flex items-center text-primary-400 hover:text-primary-300 font-medium">
+                    <i class="fas fa-external-link-alt mr-2"></i> Open Full Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Updates Section -->
+    <section id="updates" class="py-20 bg-dark-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
+                    Project <span class="gradient-underline">Updates</span>
+                </h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-400 mx-auto">
+                    Latest developments, experiments, and improvements
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-primary-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm font-medium text-primary-400 bg-primary-900/30 px-3 py-1 rounded-full">New Feature</span>
+                            <span class="text-sm text-gray-500">May 15, 2023</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Added AI Plant Recognition</h3>
+                        <p class="text-gray-400 mb-4">
+                            Implemented a new computer vision model that can identify over 50 common houseplants with 92% accuracy. The system now automatically selects the optimal climate profile when it detects a new plant.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" 
+                                 alt="Update image" 
+                                 class="w-16 h-16 rounded-md object-cover mr-4">
+                            <div>
+                                <div class="text-white font-medium">v2.1.0 Release</div>
+                                <div>Includes new dashboard widgets</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-emerald-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm font-medium text-emerald-400 bg-emerald-900/30 px-3 py-1 rounded-full">Improvement</span>
+                            <span class="text-sm text-gray-500">April 28, 2023</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Enhanced Watering Algorithm</h3>
+                        <p class="text-gray-400 mb-4">
+                            Updated the soil moisture control algorithm to account for plant type, pot size, and ambient conditions. Watering is now 30% more efficient with less risk of over/under watering.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <img src="https://images.unsplash.com/photo-1560743641-3914f2c45668?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHdhdGVyaW5nJTIwcGxhbnR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" 
+                                 alt="Update image" 
+                                 class="w-16 h-16 rounded-md object-cover mr-4">
+                            <div>
+                                <div class="text-white font-medium">v2.0.5 Update</div>
+                                <div>Bug fixes and performance improvements</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-purple-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm font-medium text-purple-400 bg-purple-900/30 px-3 py-1 rounded-full">Integration</span>
+                            <span class="text-sm text-gray-500">March 10, 2023</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Alexa Voice Control Added</h3>
+                        <p class="text-gray-400 mb-4">
+                            Expanded voice control support to include Amazon Alexa alongside Google Assistant. Users can now check status and control basic functions using either platform.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <img src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGFsZXhhfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" 
+                                 alt="Update image" 
+                                 class="w-16 h-16 rounded-md object-cover mr-4">
+                            <div>
+                                <div class="text-white font-medium">v2.0.0 Major Release</div>
+                                <div>Complete UI redesign</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sensor-card bg-dark-800 rounded-xl border border-dark-700 hover:border-amber-500/30 transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm font-medium text-amber-400 bg-amber-900/30 px-3 py-1 rounded-full">Experiment</span>
+                            <span class="text-sm text-gray-500">February 2, 2023</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Testing CO₂ Monitoring</h3>
+                        <p class="text-gray-400 mb-4">
+                            Experimenting with adding CO₂ monitoring to better understand plant photosynthesis cycles. Initial results show interesting correlations with growth rates.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <img src="https://images.unsplash.com/photo-1567225597673-6b257c7fd5a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhcmJvbiUyMGRpb3hpZGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" 
+                                 alt="Update image" 
+                                 class="w-16 h-16 rounded-md object-cover mr-4">
+                            <div>
+                                <div class="text-white font-medium">Experimental Branch</div>
+                                <div>Not yet in stable release</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <button class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-dark-800 hover:bg-dark-700 border-dark-600 transition-colors">
+                    <i class="fas fa-history mr-2"></i> View All Updates
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 gradient-animate bg-gradient-to-r from-primary-900 to-emerald-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-white sm:text-4xl mb-6">
+                    Ready to build your own Microclimate Pod?
+                </h2>
+                <p class="text-xl text-gray-200 max-w-3xl mx-auto mb-8">
+                    Get the complete hardware kit and software package to start growing plants with perfect conditions.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#" class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 transition-colors">
+                        <i class="fas fa-shopping-cart mr-2"></i> Purchase Kit
+                    </a>
+                    <a href="#" class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-md shadow-sm text-primary-100 bg-dark-800/50 hover:bg-dark-700/50 border-primary-700/50 transition-colors">
+                        <i class="fas fa-envelope mr-2"></i> Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark-900 border-t border-dark-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase mb-4">Project</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">Documentation</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">Releases</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">Roadmap</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">Contributing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase mb-4">Resources</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">Community</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">Tutorials</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">API Reference</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">Help Center</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase mb-4">Company</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">About</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">Blog</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">Careers</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase mb-4">Connect</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                    <div class="mt-6">
+                        <p class="text-sm text-gray-400">Subscribe to our newsletter</p>
+                        <div class="mt-2 flex">
+                            <input type="email" placeholder="Your email" class="bg-dark-800 border border-dark-700 text-white text-sm rounded-l-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 w-full">
+                            <button class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-r-md text-sm font-medium transition-colors">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-dark-800 flex flex-col md:flex-row justify-between items-center">
+
+</body>
+</html>
